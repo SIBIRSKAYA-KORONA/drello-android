@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">drello</string>
+    <string name="login">логин</string>
+    <string name="password">пароль</string>
+    <string name="login_btn">войти</string>
+    <string name="join_btn">присоединиться</string>
 </resources>
