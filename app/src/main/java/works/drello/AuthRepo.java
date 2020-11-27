@@ -1,32 +1,39 @@
 package works.drello;
 
 import android.content.Context;
+import android.os.Build;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.github.cliftonlabs.json_simple.JsonObject;
+
 import java.util.List;
+import java.util.Base64;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import works.drello.network.ApiRepo;
-import works.drello.network.UserApi;
+import works.drello.network.SessionApi;
+
+import android.util.Log;
 
 
 @SuppressWarnings("WeakerAccess")
 public class AuthRepo {
 
     private final ApiRepo mApiRepo;
-    public AuthRepo(ApiRepo apiRepo) {
-        mApiRepo = apiRepo;
+
+    public AuthRepo() {
+        mApiRepo = new ApiRepo();
     }
 
-    @NonNull
-    public static AuthRepo getInstance(Context context) {
-        return ApplicationModified.from(context).getAuthRepo();
+    public AuthRepo(ApiRepo apiRepo) {
+        mApiRepo = apiRepo;
     }
 
     private String mCurrentUser;
@@ -39,49 +46,42 @@ public class AuthRepo {
             mAuthProgress.postValue(AuthProgress.FAILED);
         }
         mCurrentUser = login;
-        mAuthProgress = new MutableLiveData<>();
-        mAuthProgress.setValue(AuthProgress.IN_PROGRESS);
+        mAuthProgress = new MutableLiveData<>(AuthProgress.IN_PROGRESS);
 
-        login(mAuthProgress, login, password);
+        JsonObject json = new JsonObject();
+        json.put("nickname", login);
+        String pass = new String(Base64.getDecoder().decode(password));
+        json.put("password", "pass");
+
+        mApiRepo.getSessionApi()
+                .create(json.toJson())
+                .enqueue(new Callback<List<SessionApi.UserPlain>>() {
+            @Override
+            public void onResponse(Call<List<SessionApi.UserPlain>> call,
+                                   Response<List<SessionApi.UserPlain>> response) {
+
+                if (response.isSuccessful() && response.body() != null) {
+                    mAuthProgress.postValue(AuthProgress.SUCCESS);
+                    /*List<SessionApi.UserPlain> users = response.body();
+                    if (hasUserCredentials(users, login, password)) {
+                        mAuthProgress.postValue(AuthProgress.SUCCESS);
+                        return;
+                    }*/
+                }
+                mAuthProgress.postValue(AuthProgress.FAILED);
+            }
+
+            @Override
+            public void onFailure(Call<List<SessionApi.UserPlain>> call, Throwable t) {
+                mAuthProgress.postValue(AuthProgress.FAILED);
+            }
+        });
+
         return mAuthProgress;
     }
 
-    interface LoginCallback {
-        void onSuccess();
-        void onError();
-    }
-
-    public void login(@NonNull String login, @NonNull String password, LoginCallback callback) {
-
-    }
-
-    private void login(final MutableLiveData<AuthProgress> progress, @NonNull final String login, @NonNull final String password) {
-        UserApi api = mApiRepo.getUserApi();
-        api.getAll().enqueue(new Callback<List<UserApi.UserPlain>>() {
-            @Override
-            public void onResponse(Call<List<UserApi.UserPlain>> call,
-                                   Response<List<UserApi.UserPlain>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    List<UserApi.UserPlain> users = response.body();
-                    if (hasUserCredentials(users, login, password)) {
-                        progress.postValue(AuthProgress.SUCCESS);
-                        return;
-                    }
-                }
-                progress.postValue(AuthProgress.FAILED);
-            }
-
-            @Override
-            public void onFailure(Call<List<UserApi.UserPlain>> call, Throwable t) {
-                progress.postValue(AuthProgress.FAILED);
-            }
-        });
-    }
-
-    private static boolean hasUserCredentials(List<UserApi.UserPlain> users,
-                                              String login,
-                                              String pass) {
-        for (UserApi.UserPlain user : users) {
+    private static boolean hasUserCredentials(List<SessionApi.UserPlain> users, String login, String pass) {
+        for (SessionApi.UserPlain user : users) {
             if (TextUtils.equals(user.name, login) && TextUtils.equals(user.password, pass)) {
                 return true;
             }

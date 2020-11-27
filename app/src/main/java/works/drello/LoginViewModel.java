@@ -1,18 +1,29 @@
 package works.drello;
 
 import android.app.Application;
+import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
+
+import java.util.Objects;
 
 @SuppressWarnings("WeakerAccess")
 public class LoginViewModel extends AndroidViewModel {
 
     private LoginData mLastLoginData = new LoginData("", "");
+
+    private final AuthRepo authRepo = new AuthRepo();
 
     private final MediatorLiveData<LoginState> mLoginState = new MediatorLiveData<>();
 
@@ -39,12 +50,11 @@ public class LoginViewModel extends AndroidViewModel {
         }
     }
 
-
     private void requestLogin(final LoginData loginData) {
-
         mLoginState.postValue(LoginState.IN_PROGRESS);
-        final LiveData<AuthRepo.AuthProgress> progressLiveData =
-                AuthRepo.getInstance(getApplication()).login(loginData.getLogin(), loginData.getPassword());
+
+        // TODO: починить
+        final LiveData<AuthRepo.AuthProgress> progressLiveData = authRepo.login(loginData.getLogin(), loginData.getPassword());
 
         mLoginState.addSource(progressLiveData, authProgress -> {
             if (authProgress == AuthRepo.AuthProgress.SUCCESS) {
@@ -91,7 +101,8 @@ public class LoginViewModel extends AndroidViewModel {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             LoginData loginData = (LoginData) o;
-            return mLogin.equals(loginData.mLogin) &&  mLogin.equals(loginData.mPassword);
+            return mLogin.equals(loginData.mLogin) &&
+                    mPassword.equals(loginData.mPassword);
         }
 
     }
