@@ -14,15 +14,17 @@
         android:showDividers="middle">
 
         <TextView
-            android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:text="Регистрация"
-            android:textSize="24sp"/>
+            android:layout_height="wrap_content"
+            android:text="@string/register_page_title"
+            android:textSize="24sp" />
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/register_page_first_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Имя">
+            android:hint="@string/register_page_first_name"
+            app:errorEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
@@ -32,9 +34,11 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/register_page_second_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Фамилия">
+            android:hint="@string/register_page_second_name"
+            app:errorEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
@@ -44,9 +48,11 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/register_page_nickname"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Ник">
+            android:hint="@string/register_page_nickname"
+            app:errorEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
@@ -56,10 +62,12 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/register_page_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Пароль"
-            app:endIconMode="password_toggle">
+            android:hint="@string/register_page_password"
+            app:endIconMode="password_toggle"
+            app:errorEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
@@ -69,9 +77,11 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/register_page_password_retry"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Повторный пароль">
+            android:hint="@string/register_page_password_retry"
+            app:errorEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
@@ -81,9 +91,10 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.button.MaterialButton
-            android:layout_height="wrap_content"
+            android:id="@+id/register_page_register_button"
             android:layout_width="wrap_content"
-            android:text="Регистрация"/>
+            android:layout_height="wrap_content"
+            android:text="@string/register_page_register_button" />
 
     </LinearLayout>
 </FrameLayout>

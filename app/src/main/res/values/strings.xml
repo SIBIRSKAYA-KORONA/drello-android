@@ -4,4 +4,25 @@
     <string name="password">пароль</string>
     <string name="login_btn">войти</string>
     <string name="join_btn">присоединиться</string>
+
+    <string name="register_page_title">Регистрация</string>
+    <string name="register_page_first_name">Имя</string>
+    <string name="register_page_second_name">Фамилия</string>
+    <string name="register_page_nickname">Ник</string>
+    <string name="register_page_password">Пароль</string>
+    <string name="register_page_password_retry">Повторный пароль</string>
+    <string name="register_page_register_button">Регистрация</string>
+
+    <string name="register_page_error_first_name_too_short">Должно содержать более 1 символа</string>
+    <string name="register_page_error_first_name_bad_symbols">Допустимы только русские и английские буквы</string>
+
+    <string name="register_page_error_second_name_too_short">Должно содержать более 1 символа</string>
+    <string name="register_page_error_second_name_bad_symbols">Допустимы только русские и английские буквы</string>
+
+    <string name="register_page_error_nickname_too_short">Должно содержать более 4 символов</string>
+    <string name="register_page_error_nickname_bad_symbols">Допустимы только английские буквы, цифры и спецсимволы ._</string>
+
+    <string name="register_page_error_password_too_short">Должно содержать миниум 6 символов</string>
+    <string name="register_page_error_password_bad_symbols">Допустимы только английские буквы и цифры</string>
+    <string name="register_page_error_password_mismatch">Пароли не совпадают</string>
 </resources>
