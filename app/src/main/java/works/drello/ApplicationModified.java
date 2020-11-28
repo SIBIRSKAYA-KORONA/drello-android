@@ -12,7 +12,7 @@ public class ApplicationModified extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        ApiRepo ApiRepo = new ApiRepo();
+        ApiRepo ApiRepo = new ApiRepo(this.getApplicationContext());
         mAuthRepo = new AuthRepo(ApiRepo);
     }
 

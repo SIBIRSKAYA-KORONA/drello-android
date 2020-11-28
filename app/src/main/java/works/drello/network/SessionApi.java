@@ -1,10 +1,10 @@
 package works.drello.network;
 
 import com.github.cliftonlabs.json_simple.JsonObject;
+
 import retrofit2.Call;
 import retrofit2.http.DELETE;
 import retrofit2.http.POST;
-import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.Body;
 
@@ -17,5 +17,5 @@ public interface SessionApi {
     Call<Void> create(@Body JsonObject body);
 
     @DELETE(LOCAL_PATH)
-    Call<Void> delete(@Header("Cookie") String sessionId);
+    Call<Void> delete();
 }

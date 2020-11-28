@@ -1,29 +1,27 @@
 package works.drello;
 
+import android.util.Log;
+import android.content.Context;
 import androidx.annotation.NonNull;
 import org.jetbrains.annotations.NotNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+
 import com.github.cliftonlabs.json_simple.JsonObject;
+
 import java.util.Base64;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
 import works.drello.network.ApiRepo;
-import android.util.Log;
-import android.content.Context;
 
 @SuppressWarnings("WeakerAccess")
 public class AuthRepo {
 
     private MutableLiveData<AuthProgress> mAuthProgress = new MutableLiveData<>(AuthProgress.NONE);
     private final ApiRepo mApiRepo;
-
-    private String SID;
-
-    public AuthRepo() {
-        mApiRepo = new ApiRepo();
-    }
 
     public AuthRepo(ApiRepo apiRepo) {
         mApiRepo = apiRepo;
@@ -56,8 +54,7 @@ public class AuthRepo {
 
                             String cookieHeader = response.headers().get("Set-Cookie");
                             Log.i("Set-Cookie header", cookieHeader);
-                            SID = cookieHeader.split(";")[0].split("=")[1];
-                            Log.i("session_id", SID);
+                            Log.i("session_id", cookieHeader.split(";")[0].split("=")[1]);
                             return;
                         }
                         Log.w("login onResponse", response.toString());
@@ -81,7 +78,7 @@ public class AuthRepo {
         mAuthProgress = new MutableLiveData<>(AuthProgress.IN_PROGRESS);
 
         mApiRepo.getSessionApi()
-                .delete(SID)
+                .delete()
                 .enqueue(new Callback<Void>() {
                     @Override
                     public void onResponse(@NotNull Call<Void> call,

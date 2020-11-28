@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -62,7 +63,6 @@ public class LoginFragment extends Fragment {
                     loginBtn.setEnabled(true);
                     break;
                 default:
-                    loginBtn.setBackgroundColor(getResources().getColor(android.R.color.holo_blue_dark));
             }
         }
     }

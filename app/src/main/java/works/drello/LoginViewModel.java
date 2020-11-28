@@ -3,6 +3,7 @@ package works.drello;
 import android.app.Application;
 import android.text.TextUtils;
 import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
@@ -12,9 +13,6 @@ import androidx.lifecycle.MediatorLiveData;
 public class LoginViewModel extends AndroidViewModel {
 
     private LoginData mLastLoginData = new LoginData("", "");
-
-    // TODO: это должен быть синглтон или надо инициализировать все классы в main
-    private final AuthRepo authRepo = new AuthRepo();
 
     private final MediatorLiveData<LoginState> mLoginState = new MediatorLiveData<>();
 
@@ -46,8 +44,6 @@ public class LoginViewModel extends AndroidViewModel {
 
         final LiveData<AuthRepo.AuthProgress> progressLiveData = AuthRepo.getInstance(getApplication())
                 .login(loginData.getLogin(), loginData.getPassword());
-
-        //final LiveData<AuthRepo.AuthProgress> progressLiveData = authRepo.login(loginData.getLogin(), loginData.getPassword());
 
         mLoginState.addSource(progressLiveData, authProgress -> {
             if (authProgress == AuthRepo.AuthProgress.SUCCESS) {
