@@ -48,7 +48,9 @@ public class RegisterFragment extends Fragment {
             isValid &= validatePassword(passwordInput);
             isValid &= validatePasswords(passwordInput, passwordRetryInput);
 
-            Log.d("RegisterFragment", Boolean.toString(isValid));
+            if (isValid) {
+                // TODO: make api request
+            }
 
         });
     }
