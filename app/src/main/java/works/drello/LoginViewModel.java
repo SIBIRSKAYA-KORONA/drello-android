@@ -43,7 +43,11 @@ public class LoginViewModel extends AndroidViewModel {
 
     private void requestLogin(final LoginData loginData) {
         mLoginState.postValue(LoginState.IN_PROGRESS);
-        final LiveData<AuthRepo.AuthProgress> progressLiveData = authRepo.login(loginData.getLogin(), loginData.getPassword());
+
+        final LiveData<AuthRepo.AuthProgress> progressLiveData = AuthRepo.getInstance(getApplication())
+                .login(loginData.getLogin(), loginData.getPassword());
+
+        //final LiveData<AuthRepo.AuthProgress> progressLiveData = authRepo.login(loginData.getLogin(), loginData.getPassword());
 
         mLoginState.addSource(progressLiveData, authProgress -> {
             if (authProgress == AuthRepo.AuthProgress.SUCCESS) {

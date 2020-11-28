@@ -11,6 +11,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import works.drello.network.ApiRepo;
 import android.util.Log;
+import android.content.Context;
 
 @SuppressWarnings("WeakerAccess")
 public class AuthRepo {
@@ -26,6 +27,11 @@ public class AuthRepo {
 
     public AuthRepo(ApiRepo apiRepo) {
         mApiRepo = apiRepo;
+    }
+
+    @NonNull
+    public static AuthRepo getInstance(Context context) {
+        return ApplicationModified.from(context).getAuthRepo();
     }
 
     public LiveData<AuthProgress> login(@NonNull String login, @NonNull String password) {
@@ -49,18 +55,18 @@ public class AuthRepo {
                             mAuthProgress.postValue(AuthProgress.SUCCESS);
 
                             String cookieHeader = response.headers().get("Set-Cookie");
-                            Log.i("Set-Cookie header: ", cookieHeader);
+                            Log.i("Set-Cookie header", cookieHeader);
                             SID = cookieHeader.split(";")[0].split("=")[1];
-                            Log.i("session_id: ", SID);
+                            Log.i("session_id", SID);
                             return;
                         }
-                        Log.w("login onResponse: ", response.toString());
+                        Log.w("login onResponse", response.toString());
                         mAuthProgress.postValue(AuthProgress.FAILED);
                     }
 
                     @Override
                     public void onFailure(@NotNull Call<Void> call, @NotNull Throwable t) {
-                        Log.w("login onFailure: ", t.getMessage());
+                        Log.w("login onFailure", t.getMessage());
                         mAuthProgress.postValue(AuthProgress.FAILED);
                     }
                 });
@@ -84,13 +90,13 @@ public class AuthRepo {
                             mAuthProgress.postValue(AuthProgress.SUCCESS);
                             return;
                         }
-                        Log.w("logout onResponse: ", response.toString());
+                        Log.w("logout onResponse", response.toString());
                         mAuthProgress.postValue(AuthProgress.FAILED);
                     }
 
                     @Override
                     public void onFailure(@NotNull Call<Void> call, @NotNull Throwable t) {
-                        Log.w("logout onFailure: ", t.getMessage());
+                        Log.w("logout onFailure", t.getMessage());
                         mAuthProgress.postValue(AuthProgress.FAILED);
                     }
                 });
