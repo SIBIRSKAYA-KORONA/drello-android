@@ -1,20 +1,21 @@
 package works.drello.network;
 
-import java.util.List;
-
+import com.github.cliftonlabs.json_simple.JsonObject;
 import retrofit2.Call;
+import retrofit2.http.DELETE;
 import retrofit2.http.POST;
+import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.Body;
 
 public interface SessionApi {
 
-    class UserPlain {
-        public String name;
-        public String password;
-    }
+    String LOCAL_PATH = "session";
 
     @Headers("Content-Type: application/json")
-    @POST("session")
-    Call<List<UserPlain>> create(@Body String body);
+    @POST(LOCAL_PATH)
+    Call<Void> create(@Body JsonObject body);
+
+    @DELETE(LOCAL_PATH)
+    Call<Void> delete(@Header("Cookie") String sessionId);
 }

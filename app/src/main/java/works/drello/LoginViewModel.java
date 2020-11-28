@@ -1,28 +1,19 @@
 package works.drello;
 
 import android.app.Application;
-import android.os.Build;
-import android.os.Handler;
-import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
-
-import java.util.Objects;
 
 @SuppressWarnings("WeakerAccess")
 public class LoginViewModel extends AndroidViewModel {
 
     private LoginData mLastLoginData = new LoginData("", "");
 
+    // TODO: это должен быть синглтон или надо инициализировать все классы в main
     private final AuthRepo authRepo = new AuthRepo();
 
     private final MediatorLiveData<LoginState> mLoginState = new MediatorLiveData<>();
@@ -44,7 +35,7 @@ public class LoginViewModel extends AndroidViewModel {
         if (!loginData.isValid()) {
             mLoginState.postValue(LoginState.ERROR);
         } else if (last != null && last.equals(loginData)) {
-            Log.w("LoginViewModel", "Ignoring duplicate request with login data");
+            Log.w("LoginViewModel:: ", "Ignoring duplicate request with login data");
         } else if (mLoginState.getValue() != LoginState.IN_PROGRESS) {
             requestLogin(loginData);
         }
@@ -52,8 +43,6 @@ public class LoginViewModel extends AndroidViewModel {
 
     private void requestLogin(final LoginData loginData) {
         mLoginState.postValue(LoginState.IN_PROGRESS);
-
-        // TODO: починить
         final LiveData<AuthRepo.AuthProgress> progressLiveData = authRepo.login(loginData.getLogin(), loginData.getPassword());
 
         mLoginState.addSource(progressLiveData, authProgress -> {
