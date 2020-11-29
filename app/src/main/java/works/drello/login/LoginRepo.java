@@ -1,42 +1,52 @@
-package works.drello;
+package works.drello.login;
+
+import java.util.Base64;
 
 import android.util.Log;
 import android.content.Context;
-import androidx.annotation.NonNull;
+
 import org.jetbrains.annotations.NotNull;
+
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-
-import com.github.cliftonlabs.json_simple.JsonObject;
-
-import java.util.Base64;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import com.github.cliftonlabs.json_simple.JsonObject;
+
+import works.drello.common.ApplicationModified;
 import works.drello.network.ApiRepo;
 
 @SuppressWarnings("WeakerAccess")
-public class AuthRepo {
+public class LoginRepo {
 
-    private MutableLiveData<AuthProgress> mAuthProgress = new MutableLiveData<>(AuthProgress.NONE);
+    enum LoginProgress {
+        NONE,
+        IN_PROGRESS,
+        SUCCESS,
+        FAILED
+    }
+
+    private MutableLiveData<LoginProgress> mAuthProgress = new MutableLiveData<>(LoginProgress.NONE);
     private final ApiRepo mApiRepo;
 
-    public AuthRepo(ApiRepo apiRepo) {
+    public LoginRepo(ApiRepo apiRepo) {
         mApiRepo = apiRepo;
     }
 
     @NonNull
-    public static AuthRepo getInstance(Context context) {
+    public static LoginRepo getInstance(Context context) {
         return ApplicationModified.from(context).getAuthRepo();
     }
 
-    public LiveData<AuthProgress> login(@NonNull String login, @NonNull String password) {
-        if (mAuthProgress.getValue() == AuthProgress.IN_PROGRESS) {
+    public LiveData<LoginProgress> login(@NonNull String login, @NonNull String password) {
+        if (mAuthProgress.getValue() == LoginProgress.IN_PROGRESS) {
             return mAuthProgress;
         }
-        mAuthProgress = new MutableLiveData<>(AuthProgress.IN_PROGRESS);
+        mAuthProgress = new MutableLiveData<>(LoginProgress.IN_PROGRESS);
 
         JsonObject json = new JsonObject();
         json.put("nickname", login);
@@ -50,7 +60,7 @@ public class AuthRepo {
                     public void onResponse(@NotNull Call<Void> call,
                                            @NotNull Response<Void> response) {
                         if (response.isSuccessful()) {
-                            mAuthProgress.postValue(AuthProgress.SUCCESS);
+                            mAuthProgress.postValue(LoginProgress.SUCCESS);
 
                             String cookieHeader = response.headers().get("Set-Cookie");
                             Log.i("Set-Cookie header", cookieHeader);
@@ -58,24 +68,24 @@ public class AuthRepo {
                             return;
                         }
                         Log.w("login onResponse", response.toString());
-                        mAuthProgress.postValue(AuthProgress.FAILED);
+                        mAuthProgress.postValue(LoginProgress.FAILED);
                     }
 
                     @Override
                     public void onFailure(@NotNull Call<Void> call, @NotNull Throwable t) {
                         Log.w("login onFailure", t.getMessage());
-                        mAuthProgress.postValue(AuthProgress.FAILED);
+                        mAuthProgress.postValue(LoginProgress.FAILED);
                     }
                 });
 
         return mAuthProgress;
     }
 
-    public LiveData<AuthProgress> logout(@NonNull String login, @NonNull String password) {
-        if (mAuthProgress.getValue() == AuthProgress.IN_PROGRESS) {
+    public LiveData<LoginProgress> logout(@NonNull String login, @NonNull String password) {
+        if (mAuthProgress.getValue() == LoginProgress.IN_PROGRESS) {
             return mAuthProgress;
         }
-        mAuthProgress = new MutableLiveData<>(AuthProgress.IN_PROGRESS);
+        mAuthProgress = new MutableLiveData<>(LoginProgress.IN_PROGRESS);
 
         mApiRepo.getSessionApi()
                 .delete()
@@ -84,27 +94,20 @@ public class AuthRepo {
                     public void onResponse(@NotNull Call<Void> call,
                                            @NotNull Response<Void> response) {
                         if (response.isSuccessful()) {
-                            mAuthProgress.postValue(AuthProgress.SUCCESS);
+                            mAuthProgress.postValue(LoginProgress.SUCCESS);
                             return;
                         }
                         Log.w("logout onResponse", response.toString());
-                        mAuthProgress.postValue(AuthProgress.FAILED);
+                        mAuthProgress.postValue(LoginProgress.FAILED);
                     }
 
                     @Override
                     public void onFailure(@NotNull Call<Void> call, @NotNull Throwable t) {
                         Log.w("logout onFailure", t.getMessage());
-                        mAuthProgress.postValue(AuthProgress.FAILED);
+                        mAuthProgress.postValue(LoginProgress.FAILED);
                     }
                 });
 
         return mAuthProgress;
-    }
-
-    enum AuthProgress {
-        NONE,
-        IN_PROGRESS,
-        SUCCESS,
-        FAILED
     }
 }
