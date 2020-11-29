@@ -1,4 +1,4 @@
-package works.drello;
+package works.drello.registration;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -15,6 +15,7 @@ import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.Objects;
 
+import works.drello.R;
 import works.drello.utils.Validator;
 
 
