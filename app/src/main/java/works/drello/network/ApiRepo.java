@@ -2,39 +2,43 @@ package works.drello.network;
 
 import android.content.Context;
 
-import okhttp3.HttpUrl;
+import com.franmontiel.persistentcookiejar.ClearableCookieJar;
+import com.franmontiel.persistentcookiejar.PersistentCookieJar;
+import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
+import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
+
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 
 import retrofit2.Retrofit;
-import retrofit2.converter.moshi.MoshiConverterFactory;
-
-import works.drello.ApplicationModified;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiRepo {
-    private final UserApi mUserApi;
-    private final OkHttpClient mOkHttpClient;
+    private final SessionApi mSessionApi;
 
-    public ApiRepo() {
-        mOkHttpClient = new OkHttpClient()
-                .newBuilder()
+    public ApiRepo(Context context) {
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+        ClearableCookieJar cookieJar = new PersistentCookieJar(new SetCookieCache(),
+                new SharedPrefsCookiePersistor(context));
+
+        OkHttpClient clt = new OkHttpClient.Builder()
+                .addInterceptor(interceptor)
+                .cookieJar(cookieJar)
                 .build();
 
         Retrofit retrofit = new Retrofit.Builder()
-                .addConverterFactory(MoshiConverterFactory.create())
-                .baseUrl(new HttpUrl.Builder().scheme("https")
-                        .host("tp-android-demo.firebaseio.com")
-                        .build())
-                .client(mOkHttpClient)
+                .baseUrl("https://drello.works/api/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(clt)
                 .build();
 
-        mUserApi = retrofit.create(UserApi.class);
+        mSessionApi = retrofit.create(SessionApi.class);
+
     }
 
-    public UserApi getUserApi() {
-        return mUserApi;
-    }
-
-    public static ApiRepo from(Context context) {
-        return ApplicationModified.from(context).getApis();
+    public SessionApi getSessionApi() {
+        return mSessionApi;
     }
 }

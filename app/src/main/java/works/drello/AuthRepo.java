@@ -1,25 +1,28 @@
 package works.drello;
 
+import android.util.Log;
 import android.content.Context;
-import android.text.TextUtils;
-
 import androidx.annotation.NonNull;
+import org.jetbrains.annotations.NotNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import java.util.List;
+import com.github.cliftonlabs.json_simple.JsonObject;
+
+import java.util.Base64;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import works.drello.network.ApiRepo;
-import works.drello.network.UserApi;
 
+import works.drello.network.ApiRepo;
 
 @SuppressWarnings("WeakerAccess")
 public class AuthRepo {
 
+    private MutableLiveData<AuthProgress> mAuthProgress = new MutableLiveData<>(AuthProgress.NONE);
     private final ApiRepo mApiRepo;
+
     public AuthRepo(ApiRepo apiRepo) {
         mApiRepo = apiRepo;
     }
@@ -29,67 +32,77 @@ public class AuthRepo {
         return ApplicationModified.from(context).getAuthRepo();
     }
 
-    private String mCurrentUser;
-    private MutableLiveData<AuthProgress> mAuthProgress;
-
     public LiveData<AuthProgress> login(@NonNull String login, @NonNull String password) {
-        if (TextUtils.equals(login, mCurrentUser) && mAuthProgress.getValue() == AuthProgress.IN_PROGRESS) {
+        if (mAuthProgress.getValue() == AuthProgress.IN_PROGRESS) {
             return mAuthProgress;
-        } else if (!TextUtils.equals(login, mCurrentUser) && mAuthProgress != null) {
-            mAuthProgress.postValue(AuthProgress.FAILED);
         }
-        mCurrentUser = login;
-        mAuthProgress = new MutableLiveData<>();
-        mAuthProgress.setValue(AuthProgress.IN_PROGRESS);
+        mAuthProgress = new MutableLiveData<>(AuthProgress.IN_PROGRESS);
 
-        login(mAuthProgress, login, password);
+        JsonObject json = new JsonObject();
+        json.put("nickname", login);
+        String pass = Base64.getEncoder().encodeToString(password.getBytes());
+        json.put("password", pass);
+
+        mApiRepo.getSessionApi()
+                .create(json)
+                .enqueue(new Callback<Void>() {
+                    @Override
+                    public void onResponse(@NotNull Call<Void> call,
+                                           @NotNull Response<Void> response) {
+                        if (response.isSuccessful()) {
+                            mAuthProgress.postValue(AuthProgress.SUCCESS);
+
+                            String cookieHeader = response.headers().get("Set-Cookie");
+                            Log.i("Set-Cookie header", cookieHeader);
+                            Log.i("session_id", cookieHeader.split(";")[0].split("=")[1]);
+                            return;
+                        }
+                        Log.w("login onResponse", response.toString());
+                        mAuthProgress.postValue(AuthProgress.FAILED);
+                    }
+
+                    @Override
+                    public void onFailure(@NotNull Call<Void> call, @NotNull Throwable t) {
+                        Log.w("login onFailure", t.getMessage());
+                        mAuthProgress.postValue(AuthProgress.FAILED);
+                    }
+                });
+
         return mAuthProgress;
     }
 
-    interface LoginCallback {
-        void onSuccess();
-        void onError();
-    }
-
-    public void login(@NonNull String login, @NonNull String password, LoginCallback callback) {
-
-    }
-
-    private void login(final MutableLiveData<AuthProgress> progress, @NonNull final String login, @NonNull final String password) {
-        UserApi api = mApiRepo.getUserApi();
-        api.getAll().enqueue(new Callback<List<UserApi.UserPlain>>() {
-            @Override
-            public void onResponse(Call<List<UserApi.UserPlain>> call,
-                                   Response<List<UserApi.UserPlain>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    List<UserApi.UserPlain> users = response.body();
-                    if (hasUserCredentials(users, login, password)) {
-                        progress.postValue(AuthProgress.SUCCESS);
-                        return;
-                    }
-                }
-                progress.postValue(AuthProgress.FAILED);
-            }
-
-            @Override
-            public void onFailure(Call<List<UserApi.UserPlain>> call, Throwable t) {
-                progress.postValue(AuthProgress.FAILED);
-            }
-        });
-    }
-
-    private static boolean hasUserCredentials(List<UserApi.UserPlain> users,
-                                              String login,
-                                              String pass) {
-        for (UserApi.UserPlain user : users) {
-            if (TextUtils.equals(user.name, login) && TextUtils.equals(user.password, pass)) {
-                return true;
-            }
+    public LiveData<AuthProgress> logout(@NonNull String login, @NonNull String password) {
+        if (mAuthProgress.getValue() == AuthProgress.IN_PROGRESS) {
+            return mAuthProgress;
         }
-        return false;
+        mAuthProgress = new MutableLiveData<>(AuthProgress.IN_PROGRESS);
+
+        mApiRepo.getSessionApi()
+                .delete()
+                .enqueue(new Callback<Void>() {
+                    @Override
+                    public void onResponse(@NotNull Call<Void> call,
+                                           @NotNull Response<Void> response) {
+                        if (response.isSuccessful()) {
+                            mAuthProgress.postValue(AuthProgress.SUCCESS);
+                            return;
+                        }
+                        Log.w("logout onResponse", response.toString());
+                        mAuthProgress.postValue(AuthProgress.FAILED);
+                    }
+
+                    @Override
+                    public void onFailure(@NotNull Call<Void> call, @NotNull Throwable t) {
+                        Log.w("logout onFailure", t.getMessage());
+                        mAuthProgress.postValue(AuthProgress.FAILED);
+                    }
+                });
+
+        return mAuthProgress;
     }
 
     enum AuthProgress {
+        NONE,
         IN_PROGRESS,
         SUCCESS,
         FAILED

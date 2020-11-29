@@ -33,27 +33,30 @@ public class LoginViewModel extends AndroidViewModel {
         if (!loginData.isValid()) {
             mLoginState.postValue(LoginState.ERROR);
         } else if (last != null && last.equals(loginData)) {
-            Log.w("LoginViewModel", "Ignoring duplicate request with login data");
+            Log.w("LoginViewModel:: ", "Ignoring duplicate request with login data");
         } else if (mLoginState.getValue() != LoginState.IN_PROGRESS) {
             requestLogin(loginData);
         }
     }
 
-
     private void requestLogin(final LoginData loginData) {
-
         mLoginState.postValue(LoginState.IN_PROGRESS);
-        final LiveData<AuthRepo.AuthProgress> progressLiveData =
-                AuthRepo.getInstance(getApplication()).login(loginData.getLogin(), loginData.getPassword());
+
+        final LiveData<AuthRepo.AuthProgress> progressLiveData = AuthRepo.getInstance(getApplication())
+                .login(loginData.getLogin(), loginData.getPassword());
 
         mLoginState.addSource(progressLiveData, authProgress -> {
             if (authProgress == AuthRepo.AuthProgress.SUCCESS) {
                 mLoginState.postValue(LoginState.SUCCESS);
                 mLoginState.removeSource(progressLiveData);
+                mLastLoginData = null;
+
             } else if (authProgress == AuthRepo.AuthProgress.FAILED) {
                 mLoginState.postValue(LoginState.FAILED);
                 mLoginState.removeSource(progressLiveData);
+                mLastLoginData = null;
             }
+
         });
     }
 
@@ -91,7 +94,8 @@ public class LoginViewModel extends AndroidViewModel {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             LoginData loginData = (LoginData) o;
-            return mLogin.equals(loginData.mLogin) &&  mLogin.equals(loginData.mPassword);
+            return mLogin.equals(loginData.mLogin) &&
+                    mPassword.equals(loginData.mPassword);
         }
 
     }
