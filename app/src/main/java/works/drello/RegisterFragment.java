@@ -48,11 +48,45 @@ public class RegisterFragment extends Fragment {
             isValid &= validatePassword(passwordInput);
             isValid &= validatePasswords(passwordInput, passwordRetryInput);
 
-            if (isValid) {
-                // TODO: make api request
+            if (!isValid) {
+                return;
             }
 
+            firstNameInput.setEnabled(false);
+            secondNameInput.setEnabled(false);
+            nicknameInput.setEnabled(false);
+            passwordInput.setEnabled(false);
+            passwordRetryInput.setEnabled(false);
+            register_button.setEnabled(false);
         });
+    }
+
+    // TODO: pass result here
+    void handleRegisterResult() {
+        View view = getActivity().findViewById(R.id.register_page_fragment);
+        if (view != null) {
+            Log.d("RegisterFragment", "Can't handle result, because view not found");
+            return;
+        }
+
+        final TextInputLayout firstNameInput = view.findViewById(R.id.register_page_first_name);
+        final TextInputLayout secondNameInput = view.findViewById(R.id.register_page_second_name);
+        final TextInputLayout nicknameInput = view.findViewById(R.id.register_page_nickname);
+        final TextInputLayout passwordInput = view.findViewById(R.id.register_page_password);
+        final TextInputLayout passwordRetryInput = view.findViewById(R.id.register_page_password_retry);
+        final MaterialButton register_button = view.findViewById(R.id.register_page_register_button);
+
+        firstNameInput.setEnabled(true);
+        secondNameInput.setEnabled(true);
+        nicknameInput.setEnabled(true);
+        passwordInput.setEnabled(true);
+        passwordRetryInput.setEnabled(true);
+        register_button.setEnabled(true);
+
+//
+//        if (same nickname was found) {
+//            nicknameInput.setError(getString(R.string.error_nickname_collision));
+//        }
     }
 
     boolean validateFirstName(TextInputLayout nameInput) {

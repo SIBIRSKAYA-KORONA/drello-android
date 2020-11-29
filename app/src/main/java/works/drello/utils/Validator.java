@@ -23,12 +23,12 @@ public class Validator {
     @Nullable
     public String validateFirstName(String firstName) {
         if (firstName.length() < 1) {
-            return getString(R.string.register_page_error_first_name_too_short);
+            return getString(R.string.error_first_name_too_short);
         }
 
         String regex = "^[а-яёА-ЯЁa-zA-z]+$";
         if (!firstName.matches(regex)) {
-            return getString(R.string.register_page_error_first_name_bad_symbols);
+            return getString(R.string.error_first_name_bad_symbols);
         }
 
         return null;
@@ -37,12 +37,12 @@ public class Validator {
     @Nullable
     public String validateSecondName(String secondName) {
         if (secondName.length() < 1) {
-            return getString(R.string.register_page_error_second_name_too_short);
+            return getString(R.string.error_second_name_too_short);
         }
 
         String regex = "^[а-яёА-ЯЁa-zA-z]+$";
         if (!secondName.matches(regex)) {
-            return getString(R.string.register_page_error_second_name_bad_symbols);
+            return getString(R.string.error_second_name_bad_symbols);
         }
 
         return null;
@@ -51,12 +51,12 @@ public class Validator {
     @Nullable
     public String validateNickname(String nickname) {
         if (nickname.length() < 4) {
-            return getString(R.string.register_page_error_nickname_too_short);
+            return getString(R.string.error_nickname_too_short);
         }
 
         String regex = "^[a-zA-Z0-9_.]+$";
         if (!nickname.matches(regex)) {
-            return getString(R.string.register_page_error_nickname_bad_symbols);
+            return getString(R.string.error_nickname_bad_symbols);
         }
 
         return null;
@@ -65,12 +65,12 @@ public class Validator {
     @Nullable
     public String validatePassword(String password) {
         if (password.length() < 6) {
-            return getString(R.string.register_page_error_password_too_short);
+            return getString(R.string.error_password_too_short);
         }
 
         String regex = "^[a-zA-Z0-9]+$";
         if (!password.matches(regex)) {
-            return getString(R.string.register_page_error_password_bad_symbols);
+            return getString(R.string.error_password_bad_symbols);
         }
 
         return null;
@@ -79,7 +79,7 @@ public class Validator {
     @Nullable
     public String validatePasswords(String password, String passwordRetry) {
         if (!password.equals(passwordRetry)) {
-            return getString(R.string.register_page_error_password_mismatch);
+            return getString(R.string.error_password_mismatch);
         }
 
         return null;
