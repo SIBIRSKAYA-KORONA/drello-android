@@ -22,8 +22,8 @@ public class Validator {
 
     @Nullable
     public String validateFirstName(String firstName) {
-        if (firstName.length() < 1) {
-            return getString(R.string.error_first_name_too_short);
+        if (firstName.length() < 1 || firstName.length() > 20) {
+            return getString(R.string.error_first_name_length);
         }
 
         String regex = "^[а-яёА-ЯЁa-zA-z]+$";
@@ -36,8 +36,8 @@ public class Validator {
 
     @Nullable
     public String validateSecondName(String secondName) {
-        if (secondName.length() < 1) {
-            return getString(R.string.error_second_name_too_short);
+        if (secondName.length() < 1 || secondName.length() > 20) {
+            return getString(R.string.error_second_name_length);
         }
 
         String regex = "^[а-яёА-ЯЁa-zA-z]+$";
@@ -50,8 +50,8 @@ public class Validator {
 
     @Nullable
     public String validateNickname(String nickname) {
-        if (nickname.length() < 4) {
-            return getString(R.string.error_nickname_too_short);
+        if (nickname.length() < 4 || nickname.length() > 20) {
+            return getString(R.string.error_nickname_length);
         }
 
         String regex = "^[a-zA-Z0-9_.]+$";
@@ -64,8 +64,8 @@ public class Validator {
 
     @Nullable
     public String validatePassword(String password) {
-        if (password.length() < 6) {
-            return getString(R.string.error_password_too_short);
+        if (password.length() < 6 || password.length() > 20) {
+            return getString(R.string.error_password_length);
         }
 
         String regex = "^[a-zA-Z0-9]+$";

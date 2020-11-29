@@ -13,17 +13,17 @@
     <string name="register_page_password_retry">Повторный пароль</string>
     <string name="register_page_register_button">Регистрация</string>
 
-    <string name="error_first_name_too_short">Должно содержать более 1 символа</string>
+    <string name="error_first_name_length">Длина имени должна быть от 1 до 20 символов</string>
     <string name="error_first_name_bad_symbols">Допустимы только русские и английские буквы</string>
 
-    <string name="error_second_name_too_short">Должно содержать более 1 символа</string>
+    <string name="error_second_name_length">Длина фамилии должна быть от 1 до 20 символов</string>
     <string name="error_second_name_bad_symbols">Допустимы только русские и английские буквы</string>
 
-    <string name="error_nickname_too_short">Должно содержать более 4 символов</string>
+    <string name="error_nickname_length">Длина никнейма должна быть от 4 до 20 символов</string>
     <string name="error_nickname_collision">Пользователь с таким ником уже существует</string>
     <string name="error_nickname_bad_symbols">Допустимы только английские буквы, цифры и спецсимволы ._</string>
 
-    <string name="error_password_too_short">Должно содержать миниум 6 символов</string>
+    <string name="error_password_length">Длина пароля должна быть от 6 до 20 символов</string>
     <string name="error_password_bad_symbols">Допустимы только английские буквы и цифры</string>
     <string name="error_password_mismatch">Пароли не совпадают</string>
 </resources>
