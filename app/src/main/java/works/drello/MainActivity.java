@@ -4,19 +4,26 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import works.drello.login.LoginFragment;
+import works.drello.common.Router;
 
 public class MainActivity extends AppCompatActivity {
+    private Router mRouter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mRouter = new Router(this);
 
         setContentView(R.layout.activity_main);
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, new LoginFragment(), "Login")
-                    .commit();
+
+        if (!mRouter.isInitialized()) {
+            mRouter.openLogin();
         }
+
+    }
+
+
+    public Router getRouter() {
+        return mRouter;
     }
 }
