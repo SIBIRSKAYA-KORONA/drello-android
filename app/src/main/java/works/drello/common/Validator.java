@@ -1,4 +1,4 @@
-package works.drello.utils;
+package works.drello.common;
 
 import android.content.Context;
 

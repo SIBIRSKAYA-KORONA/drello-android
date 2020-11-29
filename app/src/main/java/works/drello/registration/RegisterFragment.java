@@ -16,7 +16,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import java.util.Objects;
 
 import works.drello.R;
-import works.drello.utils.Validator;
+import works.drello.common.Validator;
 
 
 public class RegisterFragment extends Fragment {
