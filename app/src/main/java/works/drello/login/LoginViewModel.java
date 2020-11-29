@@ -1,7 +1,6 @@
 package works.drello.login;
 
 import android.app.Application;
-import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -13,10 +12,10 @@ public class LoginViewModel extends AndroidViewModel {
 
     enum LoginState {
         NONE,
-        ERROR,
         IN_PROGRESS,
         SUCCESS,
-        FAILED
+        RESPONSE_ERROR,
+        INTERNAL_ERROR
     }
 
     private final MediatorLiveData<LoginState> mLoginState = new MediatorLiveData<>();
@@ -31,9 +30,7 @@ public class LoginViewModel extends AndroidViewModel {
     }
 
     public void login(String login, String password) {
-        if (!isValid(login, password)) {
-            mLoginState.postValue(LoginState.ERROR);
-        } else if (mLoginState.getValue() != LoginState.IN_PROGRESS) {
+        if (mLoginState.getValue() != LoginState.IN_PROGRESS) {
             requestLogin(login, password);
         }
     }
@@ -48,14 +45,13 @@ public class LoginViewModel extends AndroidViewModel {
             if (loginProgress == LoginRepo.LoginProgress.SUCCESS) {
                 mLoginState.postValue(LoginState.SUCCESS);
                 mLoginState.removeSource(progressLiveData);
-            } else if (loginProgress == LoginRepo.LoginProgress.FAILED) {
-                mLoginState.postValue(LoginState.FAILED);
+            } else if (loginProgress == LoginRepo.LoginProgress.RESPONSE_ERROR) {
+                mLoginState.postValue(LoginState.RESPONSE_ERROR);
+                mLoginState.removeSource(progressLiveData);
+            } else if (loginProgress == LoginRepo.LoginProgress.INTERNAL_ERROR) {
+                mLoginState.postValue(LoginState.INTERNAL_ERROR);
                 mLoginState.removeSource(progressLiveData);
             }
         });
-    }
-
-    private boolean isValid(String login, String password) {
-        return !TextUtils.isEmpty(login) && !TextUtils.isEmpty(password);
     }
 }

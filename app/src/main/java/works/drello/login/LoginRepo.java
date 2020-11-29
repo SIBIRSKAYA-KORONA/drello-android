@@ -27,7 +27,8 @@ public class LoginRepo {
         NONE,
         IN_PROGRESS,
         SUCCESS,
-        FAILED
+        RESPONSE_ERROR,
+        INTERNAL_ERROR
     }
 
     private MutableLiveData<LoginProgress> mAuthProgress = new MutableLiveData<>(LoginProgress.NONE);
@@ -39,7 +40,7 @@ public class LoginRepo {
 
     @NonNull
     public static LoginRepo getInstance(Context context) {
-        return ApplicationModified.from(context).getAuthRepo();
+        return ApplicationModified.from(context).getLoginRepo();
     }
 
     public LiveData<LoginProgress> login(@NonNull String login, @NonNull String password) {
@@ -63,18 +64,23 @@ public class LoginRepo {
                             mAuthProgress.postValue(LoginProgress.SUCCESS);
 
                             String cookieHeader = response.headers().get("Set-Cookie");
-                            Log.i("Set-Cookie header", cookieHeader);
-                            Log.i("session_id", cookieHeader.split(";")[0].split("=")[1]);
+                            Log.d("Set-Cookie header", cookieHeader);
                             return;
                         }
                         Log.w("login onResponse", response.toString());
-                        mAuthProgress.postValue(LoginProgress.FAILED);
+
+                        if (response.code() == 404 || response.code() == 412) {
+                            // not found login or invalid password
+                            mAuthProgress.postValue(LoginProgress.RESPONSE_ERROR);
+                        } else {
+                            mAuthProgress.postValue(LoginProgress.INTERNAL_ERROR);
+                        }
                     }
 
                     @Override
                     public void onFailure(@NotNull Call<Void> call, @NotNull Throwable t) {
                         Log.w("login onFailure", t.getMessage());
-                        mAuthProgress.postValue(LoginProgress.FAILED);
+                        mAuthProgress.postValue(LoginProgress.INTERNAL_ERROR);
                     }
                 });
 
@@ -98,13 +104,13 @@ public class LoginRepo {
                             return;
                         }
                         Log.w("logout onResponse", response.toString());
-                        mAuthProgress.postValue(LoginProgress.FAILED);
+                        mAuthProgress.postValue(LoginProgress.INTERNAL_ERROR);
                     }
 
                     @Override
                     public void onFailure(@NotNull Call<Void> call, @NotNull Throwable t) {
                         Log.w("logout onFailure", t.getMessage());
-                        mAuthProgress.postValue(LoginProgress.FAILED);
+                        mAuthProgress.postValue(LoginProgress.INTERNAL_ERROR);
                     }
                 });
 
