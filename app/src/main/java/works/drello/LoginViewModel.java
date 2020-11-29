@@ -49,10 +49,14 @@ public class LoginViewModel extends AndroidViewModel {
             if (authProgress == AuthRepo.AuthProgress.SUCCESS) {
                 mLoginState.postValue(LoginState.SUCCESS);
                 mLoginState.removeSource(progressLiveData);
+                mLastLoginData = null;
+
             } else if (authProgress == AuthRepo.AuthProgress.FAILED) {
                 mLoginState.postValue(LoginState.FAILED);
                 mLoginState.removeSource(progressLiveData);
+                mLastLoginData = null;
             }
+
         });
     }
 
