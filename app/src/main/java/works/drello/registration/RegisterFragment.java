@@ -59,10 +59,12 @@ public class RegisterFragment extends Fragment {
             passwordInput.setEnabled(false);
             passwordRetryInput.setEnabled(false);
             register_button.setEnabled(false);
+
+            // TODO(Timofey): call to async task here
         });
     }
 
-    // TODO: pass result here
+    // TODO(Timofey): pass task result here
     void handleRegisterResult() {
         View view = getActivity().findViewById(R.id.register_page_fragment);
         if (view != null) {
