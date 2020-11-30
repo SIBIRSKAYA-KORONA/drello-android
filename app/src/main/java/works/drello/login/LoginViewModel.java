@@ -45,6 +45,7 @@ public class LoginViewModel extends AndroidViewModel {
             if (loginProgress == LoginRepo.LoginProgress.SUCCESS) {
                 mLoginState.postValue(LoginState.SUCCESS);
                 mLoginState.removeSource(progressLiveData);
+                LoginRepo.getInstance(getApplication()).initCsrfToken();
             } else if (loginProgress == LoginRepo.LoginProgress.RESPONSE_ERROR) {
                 mLoginState.postValue(LoginState.RESPONSE_ERROR);
                 mLoginState.removeSource(progressLiveData);
