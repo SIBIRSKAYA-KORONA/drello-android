@@ -1,13 +1,15 @@
 package works.drello.registration;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputLayout;
@@ -23,6 +25,7 @@ public class RegisterFragment extends BaseFragment {
 
     private Validator mValidator;
 
+    private RegisterViewModel mRegisterViewModel;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -33,6 +36,7 @@ public class RegisterFragment extends BaseFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         mValidator = new Validator(getActivity());
+        mRegisterViewModel = new ViewModelProvider(getActivity()).get(RegisterViewModel.class);
 
         setNavigationUnlocked(false);
         setHeaderTitle(R.string.register_page_title);
@@ -43,10 +47,14 @@ public class RegisterFragment extends BaseFragment {
         final TextInputLayout nicknameInput = view.findViewById(R.id.register_page_nickname);
         final TextInputLayout passwordInput = view.findViewById(R.id.register_page_password);
         final TextInputLayout passwordRetryInput = view.findViewById(R.id.register_page_password_retry);
-        final MaterialButton register_button = view.findViewById(R.id.register_page_register_button);
+        final MaterialButton registerButton = view.findViewById(R.id.register_page_register_button);
 
+        mRegisterViewModel.getProgress()
+                .observe(getViewLifecycleOwner(),
+                        new RegisterFragment.RegisterObserver(registerButton, nicknameInput));
 
-        register_button.setOnClickListener(v -> {
+        registerButton.setOnClickListener(v -> {
+
             boolean isValid = validateFirstName(firstNameInput);
             isValid &= validateSecondName(secondNameInput);
             isValid &= validateNickname(nicknameInput);
@@ -57,44 +65,16 @@ public class RegisterFragment extends BaseFragment {
                 return;
             }
 
-            firstNameInput.setEnabled(false);
-            secondNameInput.setEnabled(false);
-            nicknameInput.setEnabled(false);
-            passwordInput.setEnabled(false);
-            passwordRetryInput.setEnabled(false);
-            register_button.setEnabled(false);
+            registerButton.setEnabled(false);
 
-            // TODO(Timofey): call to async task here
+            mRegisterViewModel.register(
+                    Objects.requireNonNull(firstNameInput.getEditText()).getText().toString(),
+                    Objects.requireNonNull(secondNameInput.getEditText()).getText().toString(),
+                    Objects.requireNonNull(nicknameInput.getEditText()).getText().toString(),
+                    Objects.requireNonNull(passwordInput.getEditText()).getText().toString());
         });
     }
 
-    // TODO(Timofey): pass task result here
-    void handleRegisterResult() {
-        View view = getActivity().findViewById(R.id.register_page_fragment);
-        if (view != null) {
-            Log.d("RegisterFragment", "Can't handle result, because view not found");
-            return;
-        }
-
-        final TextInputLayout firstNameInput = view.findViewById(R.id.register_page_first_name);
-        final TextInputLayout secondNameInput = view.findViewById(R.id.register_page_second_name);
-        final TextInputLayout nicknameInput = view.findViewById(R.id.register_page_nickname);
-        final TextInputLayout passwordInput = view.findViewById(R.id.register_page_password);
-        final TextInputLayout passwordRetryInput = view.findViewById(R.id.register_page_password_retry);
-        final MaterialButton register_button = view.findViewById(R.id.register_page_register_button);
-
-        firstNameInput.setEnabled(true);
-        secondNameInput.setEnabled(true);
-        nicknameInput.setEnabled(true);
-        passwordInput.setEnabled(true);
-        passwordRetryInput.setEnabled(true);
-        register_button.setEnabled(true);
-
-//
-//        if (same nickname was found) {
-//            nicknameInput.setError(getString(R.string.error_nickname_collision));
-//        }
-    }
 
     boolean validateFirstName(TextInputLayout nameInput) {
         String error = mValidator.validateFirstName(Objects.requireNonNull(nameInput.getEditText()).getText().toString());
@@ -127,5 +107,36 @@ public class RegisterFragment extends BaseFragment {
         );
         passwordRetryInput.setError(error);
         return error == null;
+    }
+
+    private class RegisterObserver implements Observer<RegisterViewModel.RegisterState> {
+        private final Button btn;
+        private final TextInputLayout nicknameInput;
+
+        public RegisterObserver(Button btn, TextInputLayout nicknameInput) {
+            this.btn = btn;
+            this.nicknameInput = nicknameInput;
+        }
+
+        @Override
+        public void onChanged(RegisterViewModel.RegisterState state) {
+            switch (state) {
+                case IN_PROGRESS:
+                    btn.setBackgroundColor(getResources().getColor(android.R.color.holo_blue_light));
+                    break;
+                case SUCCESS:
+                    btn.setEnabled(true);
+                    btn.setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
+                    break;
+                case EXIST_LOGIN_ERROR:
+                    btn.setEnabled(true);
+                    nicknameInput.setError(getString(R.string.error_nickname_collision));
+                case INTERNAL_ERROR:
+                    btn.setBackgroundColor(getResources().getColor(android.R.color.holo_red_light));
+                    break;
+                default:
+            }
+        }
+
     }
 }

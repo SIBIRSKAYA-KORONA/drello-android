@@ -16,11 +16,9 @@ import works.drello.MainActivity;
 import works.drello.R;
 import works.drello.common.BaseFragment;
 
-
 public class LoginFragment extends BaseFragment {
 
     private LoginViewModel mLoginViewModel;
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -31,8 +29,6 @@ public class LoginFragment extends BaseFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        // TODO: fix initial title, fix close on press back
 
         setNavigationUnlocked(false);
         setHeaderTitle(R.string.login_page_title);
@@ -46,35 +42,37 @@ public class LoginFragment extends BaseFragment {
         mLoginViewModel.getProgress()
                 .observe(getViewLifecycleOwner(), new LoginObserver(loginBtn));
 
-        loginBtn.setOnClickListener(v -> mLoginViewModel.login(login.getText().toString(), password.getText().toString()));
+        loginBtn.setOnClickListener(v -> {
 
+            // TODO: валидатор, норм верстка
+            loginBtn.setEnabled(false);
+
+            mLoginViewModel.login(login.getText().toString(), password.getText().toString());
+        });
         registrationBtn.setOnClickListener(v -> ((MainActivity) getActivity()).getRouter().openRegister());
     }
 
     private class LoginObserver implements Observer<LoginViewModel.LoginState> {
-        private final Button loginBtn;
+        private final Button btn;
 
         public LoginObserver(Button loginBtn) {
-            this.loginBtn = loginBtn;
+            this.btn = loginBtn;
         }
 
         @Override
-        public void onChanged(LoginViewModel.LoginState loginState) {
-            switch (loginState) {
-                case ERROR:
-                    loginBtn.setBackgroundColor(getResources().getColor(android.R.color.holo_orange_light));
-                    loginBtn.setEnabled(true);
-                    break;
+        public void onChanged(LoginViewModel.LoginState state) {
+            switch (state) {
                 case IN_PROGRESS:
-                    loginBtn.setBackgroundColor(getResources().getColor(android.R.color.holo_blue_light));
-                    loginBtn.setEnabled(false);
+                    btn.setBackgroundColor(getResources().getColor(android.R.color.holo_blue_light));
                     break;
                 case SUCCESS:
-                    loginBtn.setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
+                    btn.setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
+                    btn.setEnabled(true);
                     break;
-                case FAILED:
-                    loginBtn.setBackgroundColor(getResources().getColor(android.R.color.holo_red_dark));
-                    loginBtn.setEnabled(true);
+                case RESPONSE_ERROR:
+                case INTERNAL_ERROR:
+                    btn.setBackgroundColor(getResources().getColor(android.R.color.holo_red_dark));
+                    btn.setEnabled(true);
                     break;
                 default:
             }
