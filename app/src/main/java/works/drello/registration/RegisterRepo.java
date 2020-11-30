@@ -31,7 +31,7 @@ public class RegisterRepo {
         INTERNAL_ERROR
     }
 
-    private MutableLiveData<RegisterProgress> mProgress = new MutableLiveData<>(RegisterProgress.NONE);
+    private final MutableLiveData<RegisterProgress> mProgress = new MutableLiveData<>(RegisterProgress.NONE);
     private final ApiRepo mApiRepo;
 
     public RegisterRepo(ApiRepo apiRepo) {
@@ -48,7 +48,7 @@ public class RegisterRepo {
         if (mProgress.getValue() == RegisterProgress.IN_PROGRESS) {
             return mProgress;
         }
-        mProgress = new MutableLiveData<>(RegisterProgress.IN_PROGRESS);
+        mProgress.setValue(RegisterProgress.IN_PROGRESS);
 
         JsonObject json = new JsonObject();
         json.put("name", firstName);
