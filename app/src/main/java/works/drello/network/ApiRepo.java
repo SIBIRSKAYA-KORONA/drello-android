@@ -16,6 +16,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ApiRepo {
     private final SessionApi mSessionApi;
     private final SettingsApi mSettingsApi;
+    private final BoardsApi mBoardsApi;
 
     public ApiRepo(Context context) {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
@@ -37,7 +38,7 @@ public class ApiRepo {
 
         mSessionApi = retrofit.create(SessionApi.class);
         mSettingsApi = retrofit.create(SettingsApi.class);
-
+        mBoardsApi = retrofit.create(BoardsApi.class);
     }
 
     public SessionApi getSessionApi() {
@@ -45,5 +46,8 @@ public class ApiRepo {
     }
     public SettingsApi getSettingsApi() {
         return mSettingsApi;
+    }
+    public BoardsApi getBoardsApi() {
+        return mBoardsApi;
     }
 }
