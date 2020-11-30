@@ -9,25 +9,33 @@ import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import works.drello.MainActivity;
 import works.drello.R;
+import works.drello.common.BaseFragment;
 
-public class LoginFragment extends Fragment {
+
+public class LoginFragment extends BaseFragment {
 
     private LoginViewModel mLoginViewModel;
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
         return inflater.inflate(R.layout.login_fragment, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        // TODO: fix initial title, fix close on press back
+
+        setNavigationUnlocked(false);
+        setHeaderTitle(R.string.login_page_title);
 
         final EditText login = view.findViewById(R.id.login);
         final EditText password = view.findViewById(R.id.password);
@@ -40,7 +48,7 @@ public class LoginFragment extends Fragment {
 
         loginBtn.setOnClickListener(v -> mLoginViewModel.login(login.getText().toString(), password.getText().toString()));
 
-        registrationBtn.setOnClickListener(v -> ((MainActivity)getActivity()).getRouter().openRegister());
+        registrationBtn.setOnClickListener(v -> ((MainActivity) getActivity()).getRouter().openRegister());
     }
 
     private class LoginObserver implements Observer<LoginViewModel.LoginState> {

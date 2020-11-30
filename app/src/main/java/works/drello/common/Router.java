@@ -14,6 +14,10 @@ public class Router {
 
     private final AppCompatActivity mActivity;
 
+    /****************************************************
+     * PUBLIC
+     ****************************************************
+     */
 
     public Router(@NonNull AppCompatActivity activity) {
         mActivity = activity;
@@ -35,9 +39,13 @@ public class Router {
                 .replace(R.id.fragment_container, new RegisterFragment(), REGISTRATION_FRAGMENT_TAG)
                 .addToBackStack(null)
                 .commitAllowingStateLoss();
-
-
     }
+
+
+    /****************************************************
+     * PRIVATE
+     ****************************************************
+     */
 
 
     private void clearBackStack() {
