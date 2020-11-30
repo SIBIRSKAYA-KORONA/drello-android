@@ -8,7 +8,6 @@ import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -18,10 +17,11 @@ import com.google.android.material.textfield.TextInputLayout;
 import java.util.Objects;
 
 import works.drello.R;
+import works.drello.common.BaseFragment;
 import works.drello.common.Validator;
 
 
-public class RegisterFragment extends Fragment {
+public class RegisterFragment extends BaseFragment {
 
     private Validator mValidator;
 
@@ -29,6 +29,7 @@ public class RegisterFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
         return inflater.inflate(R.layout.registration_fragment, container, false);
     }
 
@@ -36,6 +37,9 @@ public class RegisterFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         mValidator = new Validator(getActivity());
         mRegisterViewModel = new ViewModelProvider(getActivity()).get(RegisterViewModel.class);
+
+        setNavigationUnlocked(false);
+        setHeaderTitle(R.string.register_page_title);
 
         super.onViewCreated(view, savedInstanceState);
         final TextInputLayout firstNameInput = view.findViewById(R.id.register_page_first_name);
