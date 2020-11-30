@@ -15,13 +15,13 @@ public class BaseFragment extends Fragment {
     }
 
     private DrawerLayout getDrawer() {
-        return (DrawerLayout) getActivity().findViewById(R.id.drawer);
+        return (DrawerLayout) getActivity().findViewById(R.id.navigation_drawer);
     }
 
     protected void setNavigationUnlocked(boolean toUnlock) {
         if (toUnlock) {
             getDrawer().setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-            getHeader().setNavigationIcon(R.drawable.ic_menu_24dp);
+            getHeader().setNavigationIcon(R.drawable.ic_menu);
 
         } else {
             getDrawer().setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);

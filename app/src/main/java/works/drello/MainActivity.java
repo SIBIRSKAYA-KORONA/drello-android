@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
             mRouter.openLogin();
         }
 
-        DrawerLayout drawer = findViewById(R.id.drawer);
+        DrawerLayout drawer = findViewById(R.id.navigation_drawer);
         Toolbar header = findViewById(R.id.header);
 
         // if title is null, app name will be set on initialization
@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = findViewById(R.id.drawer);
+        DrawerLayout drawer = findViewById(R.id.navigation_drawer);
 
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);

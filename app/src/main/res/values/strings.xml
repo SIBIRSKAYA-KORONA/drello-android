@@ -31,4 +31,8 @@
 
     <string name="content_description_search">Поиск</string>
     <string name="search">Поиск</string>
+
+    <string name="navigation_drawer_settings_title">Настройки</string>
+    <string name="navigation_drawer_boards_title">Доски</string>
+    <string name="navigation_drawer_logout_title">Выйти</string>
 </resources>
