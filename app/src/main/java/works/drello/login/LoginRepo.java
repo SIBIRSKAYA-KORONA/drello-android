@@ -116,4 +116,19 @@ public class LoginRepo {
 
         return mProgress;
     }
+
+    public void initCsrfToken() {
+        mApiRepo.getTokenApi().get().enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(@NotNull Call<Void> call,
+                                   @NotNull Response<Void> response) {
+
+            }
+
+            @Override
+            public void onFailure(@NotNull Call<Void> call, @NotNull Throwable t) {
+                Log.w("login onFailure", t.getMessage());
+            }
+        });
+    }
 }

@@ -6,11 +6,13 @@ import androidx.fragment.app.FragmentManager;
 
 import works.drello.R;
 import works.drello.login.LoginFragment;
+import works.drello.profile.ProfileFragment;
 import works.drello.registration.RegisterFragment;
 
 public class Router {
     private static final String LOGIN_FRAGMENT_TAG = "LOGIN_FRAGMENT_TAG";
     private static final String REGISTRATION_FRAGMENT_TAG = "REGISTRATION_FRAGMENT_TAG";
+    private static final String PROFILE_SETTINGS_PAGE = "PROFILE_SETTINGS_PAGE";
 
     private final AppCompatActivity mActivity;
 
@@ -41,6 +43,12 @@ public class Router {
                 .commitAllowingStateLoss();
     }
 
+    public void openProfileSettings() {
+        mActivity.getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, new ProfileFragment(), PROFILE_SETTINGS_PAGE)
+                .addToBackStack(null)
+                .commitAllowingStateLoss();
+    }
 
     /****************************************************
      * PRIVATE

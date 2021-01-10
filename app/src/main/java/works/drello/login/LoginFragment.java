@@ -66,8 +66,7 @@ public class LoginFragment extends BaseFragment {
                     btn.setBackgroundColor(getResources().getColor(android.R.color.holo_blue_light));
                     break;
                 case SUCCESS:
-                    btn.setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
-                    btn.setEnabled(true);
+                    ((MainActivity) getActivity()).getRouter().openProfileSettings();
                     break;
                 case RESPONSE_ERROR:
                 case INTERNAL_ERROR:
