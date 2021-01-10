@@ -1,0 +1,44 @@
+<resources>
+    <string name="app_name">drello</string>
+
+    <string name="login_page_title">Вход</string>
+    <string name="login">логин</string>
+    <string name="password">пароль</string>
+    <string name="login_btn">войти</string>
+    <string name="join_btn">присоединиться</string>
+
+    <string name="register_page_title">Регистрация</string>
+    <string name="first_name_input_description">Имя</string>
+    <string name="second_name_input_description">Фамилия</string>
+    <string name="nickname_input_description">Ник</string>
+    <string name="password_input_description">Пароль</string>
+    <string name="password_retry_input_description">Повторный пароль</string>
+    <string name="register_button_title">Регистрация</string>
+
+    <string name="error_first_name_length">Длина имени должна быть от 1 до 20 символов</string>
+    <string name="error_first_name_bad_symbols">Допустимы только русские и английские буквы</string>
+
+    <string name="error_second_name_length">Длина фамилии должна быть от 1 до 20 символов</string>
+    <string name="error_second_name_bad_symbols">Допустимы только русские и английские буквы</string>
+
+    <string name="error_nickname_length">Длина никнейма должна быть от 4 до 20 символов</string>
+    <string name="error_nickname_collision">Пользователь с таким ником уже существует</string>
+    <string name="error_nickname_bad_symbols">Допустимы только английские буквы, цифры и спецсимволы ._</string>
+
+    <string name="error_password_length">Длина пароля должна быть от 6 до 20 символов</string>
+    <string name="error_password_bad_symbols">Допустимы только английские буквы и цифры</string>
+    <string name="error_password_mismatch">Пароли не совпадают</string>
+    <string name="error_old_password_wrong">Старый пароль неверный</string>
+
+    <string name="content_description_search">Поиск</string>
+    <string name="search">Поиск</string>
+
+    <string name="navigation_drawer_settings_title">Настройки</string>
+    <string name="navigation_drawer_boards_title">Доски</string>
+    <string name="navigation_drawer_logout_title">Выйти</string>
+    <string name="old_password_input_description">Старый пароль</string>
+
+    <string name="profile_page_title">Редактирование профиля</string>
+    <string name="profile_settings_page_save_button">Сохранить</string>
+    <string name="profile_settings_page_save_success">Данные успешно сохранены</string>
+</resources>
